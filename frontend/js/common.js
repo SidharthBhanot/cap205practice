@@ -62,9 +62,10 @@ export function toast(message, error = false) {
   const item = document.createElement('div'); item.className = 'toast' + (error ? ' error' : ''); item.textContent = message;
   $('#toasts').append(item); setTimeout(() => item.remove(), error ? 9000 : 5500);
 }
-export function errorState(error, target = '#content') {
-  $(target).innerHTML = `<div class="error-state" role="alert"><strong>Unable to load this view</strong><p>${escapeHTML(error.message)}</p><button class="btn secondary" id="retry">Try again</button></div>`;
-  $('#retry').onclick = () => location.reload();
+export function errorState(error, target = '#content', retry = () => location.reload()) {
+  const container = $(target);
+  container.innerHTML = `<div class="error-state" role="alert"><strong>Unable to load this view</strong><p>${escapeHTML(error.message)}</p><button class="btn secondary" data-retry>Try again</button></div>`;
+  $('[data-retry]', container).onclick = retry;
 }
 export function empty(title, explanation, action = '') { return `<div class="empty"><h3>${escapeHTML(title)}</h3><p>${escapeHTML(explanation)}</p>${action}</div>`; }
 export function staleNotice(stale, lastRun) {

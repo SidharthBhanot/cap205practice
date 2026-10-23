@@ -4,22 +4,32 @@ export async function api(path, { method = 'GET', body, ...rest } = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 20000);
   try {
-    const response = await fetch(API_BASE + path, {
-      method, headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
-      body: body === undefined ? undefined : JSON.stringify(body), signal: controller.signal, ...rest
-    });
+    let response;
+    try {
+      response = await fetch(API_BASE + path, {
+        method, headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
+        body: body === undefined ? undefined : JSON.stringify(body), signal: controller.signal, ...rest
+      });
+    } catch (error) {
+      if (error.name === 'AbortError') throw error;
+      throw new Error(`Cannot reach the API at ${API_BASE}. Start FastAPI, then retry. If the frontend runs separately, check its API address and allowed origin.`);
+    }
     if (response.status === 204) return null;
-    const data = await response.json();
+    if (!(response.headers.get('content-type') || '').toLowerCase().includes('application/json')) {
+      throw new Error(`The server at ${API_BASE} returned a non-JSON response (HTTP ${response.status}). Open the app through the FastAPI server; a static file server cannot provide the API.`);
+    }
+    let data;
+    try { data = await response.json(); }
+    catch { throw new Error('The API returned invalid JSON. Check the backend terminal and retry.'); }
     if (!response.ok) {
-      const detail = data.detail;
+      const detail = data?.detail;
       throw new Error(Array.isArray(detail)
-        ? detail.map(e => `${e.loc.slice(1).join('.')}: ${e.msg}`).join('\n')
-        : detail || `Request failed (${response.status}).`);
+        ? detail.map(e => `${(e.loc || []).slice(1).join('.')}: ${e.msg}`).join('\n')
+        : typeof detail === 'string' ? detail : `Request failed (${response.status}).`);
     }
     return data;
   } catch (error) {
     if (error.name === 'AbortError') throw new Error('The request timed out. Check the API before trying again.');
-    if (error instanceof TypeError) throw new Error('Cannot reach the API. Start FastAPI at http://127.0.0.1:8000 and reload.');
     throw error;
   } finally { clearTimeout(timer); }
 }

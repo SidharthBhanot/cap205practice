@@ -60,9 +60,9 @@ Keep FastAPI running on port 8000. In a second terminal, from the project root:
 python -m http.server 5500 --bind 127.0.0.1 --directory frontend
 ```
 
-Open [http://127.0.0.1:5500](http://127.0.0.1:5500). `frontend/js/config.js` selects the same-origin API when served under `/app/`, and `http://127.0.0.1:8000` for the separate frontend. CORS permits `localhost:5500` and `127.0.0.1:5500`. Do not open the HTML files directly using `file://`; browser JavaScript modules and API requests require HTTP.
+Open [http://127.0.0.1:5500](http://127.0.0.1:5500). `frontend/js/config.js` selects the same-origin API when served under `/app/`, and port 8000 on the frontend’s hostname for the separate frontend. CORS permits `localhost:5500` and `127.0.0.1:5500`. Do not open the HTML files directly using `file://`; browser JavaScript modules and API requests require HTTP.
 
-If you change the API port for the separate-frontend arrangement, edit `API_BASE` in `frontend/js/config.js` and the server's `FRONTEND_ORIGINS` as needed. The recommended same-origin arrangement requires no configuration.
+If you change the API port for the separate-frontend arrangement, add `<meta name="api-base" content="http://localhost:9000">` to each frontend HTML head (using your backend address) and the server's `FRONTEND_ORIGINS` as needed. The recommended same-origin arrangement requires no configuration.
 
 ## What is implemented
 
@@ -296,3 +296,11 @@ Tests use temporary SQLite databases and do not modify your application database
 - SQLite and list processing suit a modest local dataset; large same-title buckets and in-memory result filters are not designed for an institution-wide deployment.
 
 Reference documentation: [FastAPI](https://fastapi.tiangolo.com/), [SQLAlchemy SQLite foreign-key support](https://docs.sqlalchemy.org/en/20/dialects/sqlite.html#foreign-key-support), [pytest](https://docs.pytest.org/).
+
+Optional frontend API regression checks (Node.js 18+, development only):
+
+```bash
+node --test frontend/tests/api.test.mjs
+```
+
+Sources includes Refresh, Clear filters, and in-place retries. A failed request displays the API address and distinguishes a connection failure from a static server returning HTML. Use the FastAPI-served URL above if opening the HTML directly leaves the loading message visible.
