@@ -56,7 +56,7 @@ def seed_database(db):
     state.synthetic_data = True
     state.data_revision += 1
     db.commit()
-    return {"seeded": True, "message": "Loaded 12 synthetic obligations, 9 manually registered sources (including 5 example departments) and 3 courses. Run reconciliation in the app."}
+    return {"seeded": True, "message": "Loaded 12 synthetic obligations, 10 manually registered sources (including 5 example departments) and 3 courses. Run reconciliation in the app."}
 
 
 def main():
