@@ -18,9 +18,9 @@ Open **Departmental obligations**. Explain that each record is linked to a stude
 
 ## 1:30–2:20 · Show source and department records
 
-Open **Departments and information sources**. Show how a record's origin is registered, with its type, description, reference URL and manual last-checked time.
+Open **Departments and information sources**. Show the five synthetic example departments (Library, Accounts, Hostel, Laboratories and Transport), along with the other manually registered information sources. Explain how an obligation can be traced to an issuing department/source, its description, reference URL and manual last-checked time.
 
-“These are manually registered records. A source named LMS or Faculty Notice does not mean we have a live integration. The prototype uses the information entered by the user.”
+“The department entries are synthetic examples for the demonstration. They do not represent real university records or live department connections. The prototype uses information entered by the user.”
 
 ## 2:20–3:20 · Run rule-based reconciliation
 
@@ -44,7 +44,7 @@ Explain the available statuses: Needs Verification, Under Review, Resolved and D
 
 ## 4:20–5:10 · Explain architecture and database
 
-“The browser interface sends requests to the backend API. The backend validates inputs, applies deterministic reconciliation rules and stores the records and review history in a relational database. The proposed architecture in our report separates the student-facing interface, application logic and data storage.”
+“The browser interface sends requests to the backend API. The backend validates inputs, applies deterministic reconciliation rules and stores the records and review history in a relational database. The proposed architecture in our report separates the student-facing interface, application logic and data storage. The current version uses SQLite rather than the MySQL database listed as proposed in the report.”
 
 For technical accuracy, the current repository is implemented with HTML, CSS and JavaScript, Python FastAPI, SQLAlchemy and SQLite. The submitted report lists Node.js/Express and MySQL as its proposed stack. Do not claim those technologies are already implemented in this repository.
 
