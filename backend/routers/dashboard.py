@@ -21,7 +21,7 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     open_issues = [i for i in issues if i.status in OPEN_STATUSES or i.evidence_changed]
     incomplete = [r for r in records if not normalize_title(r.title) or r.course_id is None or not r.obligation_type or r.obligation_type == "Other" or r.deadline is None]
     state = db.get(AppState, 1)
-    return {"total_obligations": len(records), "total_sources": db.scalar(select(func.count()).select_from(Source)), "total_departments": db.scalar(select(func.count()).select_from(Source).where(Source.source_type == "Department")),
+    return {"total_obligations": len(records), "total_sources": db.scalar(select(func.count()).select_from(Source)),
             "total_courses": db.scalar(select(func.count()).select_from(Course)),
             "potential_duplicates": sum(i.conflict_type == "DUPLICATE" for i in open_issues),
             "unresolved_conflicts": sum(i.conflict_type == "DEADLINE_CONFLICT" or (i.conflict_type == "INCOMPLETE_INFORMATION" and len(i.record_ids) > 1) for i in open_issues),
