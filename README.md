@@ -59,7 +59,7 @@ API documentation: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). The
 
 Skip `python -m backend.seed_data`. Schema initialization also happens automatically at server startup. Add a course from **Obligations → Add course**, register an information source, and then add records.
 
-The separate seed command adds **12 explicitly synthetic records**, 4 sources and 3 courses. It never runs automatically. Running it again is a no-op. It refuses to mix samples into a nonempty, unseeded database. No real student information is included.
+The separate seed command adds **12 explicitly synthetic records**, 9 manually registered sources (including five example departmental records) and 3 courses. It never runs automatically. Running it again is a no-op. It refuses to mix samples into a nonempty, unseeded database. No real student information is included.
 
 ### Serve the frontend separately (optional)
 
@@ -80,7 +80,7 @@ If you change the API port for the separate-frontend arrangement, add `<meta nam
 | Overview | Live record/source/course totals, open duplicate pairs, open material conflicts, incomplete records, recent records, issue queue and comparison breakdown |
 | Obligations | Create, view, edit and delete; preserve original title; course/type/status/source selection; optional deadline and source URL |
 | Record search | Search title, description, course code/name and source; filter course, type, status and deadline range; missing-deadline filter; sorting and pagination |
-| Information sources | Register, view, edit and delete unused sources; source types, descriptions, URLs and manual last-checked timestamp |
+| Departments and information sources | Register, view, edit and delete unused department/source entries; source types, descriptions, URLs and manual last-checked timestamp |
 | Reconciliation | Trigger an atomic rule-based run; view compared records and explanations; filter by classification, course and issue type |
 | Verification queue | Review source evidence side by side, view current records, set one of four statuses and save resolution notes |
 
