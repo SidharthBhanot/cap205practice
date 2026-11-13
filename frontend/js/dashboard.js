@@ -9,8 +9,7 @@ async function load() {
     const d = await api('/dashboard');
     const metrics = [
       ['Total obligations',d.total_obligations,'Recorded student obligations','records',''],
-      ['Departments',d.total_departments ?? 0,'Registered university departments','sources',''],
-      ['Information sources',d.total_sources,'Registered information sources','sources',''],
+      ['Departments and sources',d.total_sources,'Manually registered records','sources',''],
       ['Potential duplicates',d.potential_duplicates,'Records requiring comparison','reconcile','pending'],
       ['Unresolved conflicts',d.unresolved_conflicts,'Disagreements requiring review','alert','alert'],
       ['Incomplete records',d.incomplete_records,'Missing key information','records','pending']
