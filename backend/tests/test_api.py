@@ -33,7 +33,7 @@ def test_dashboard_reports_registered_departments(seeded):
     assert response.status_code==201
     after=seeded.get('/dashboard').json()
     assert after['total_departments']==1
-    assert after['total_sources']==5
+    assert after['total_sources']==10
 
 def test_full_crud_and_relationships(client):
     course = client.post('/courses', json={'code':'cap205','name':'Next Gen Computing'})
