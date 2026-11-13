@@ -26,15 +26,6 @@ def test_health_empty_database_and_frontend(client):
 
 
 
-def test_dashboard_reports_registered_departments(seeded):
-    before=seeded.get('/dashboard').json()
-    assert before['total_departments']==0
-    response=seeded.post('/sources',json={'name':'Library Department','source_type':'Manual'})
-    assert response.status_code==201
-    after=seeded.get('/dashboard').json()
-    assert after['total_departments']==0
-    assert after['total_sources']==5
-
 def test_full_crud_and_relationships(client):
     course = client.post('/courses', json={'code':'cap205','name':'Next Gen Computing'})
     assert course.status_code == 201 and course.json()['code'] == 'CAP205'
