@@ -22,7 +22,14 @@ def seed_database(db):
     notice = Source(name="Faculty Notice", source_type="Faculty Notice", description="SYNTHETIC · Demo faculty notice, recorded manually.", last_checked_at=now)
     email = Source(name="Course Email", source_type="Email", description="SYNTHETIC · Manually entered email details. No inbox access.", last_checked_at=now)
     pdf = Source(name="Semester Handbook", source_type="PDF", description="SYNTHETIC · Demo handbook entry. No PDF parsing.", last_checked_at=now - timedelta(days=65))
-    db.add_all([java, computing, maths, lms, notice, email, pdf])
+    departments = [
+        Source(name="Library Department", source_type="Manual", description="SYNTHETIC · Example library department record source; manually entered, no live integration.", last_checked_at=now),
+        Source(name="Accounts Department", source_type="Manual", description="SYNTHETIC · Example accounts department record source; manually entered, no live integration.", last_checked_at=now),
+        Source(name="Hostel Department", source_type="Manual", description="SYNTHETIC · Example hostel department record source; manually entered, no live integration.", last_checked_at=now),
+        Source(name="Laboratory Department", source_type="Manual", description="SYNTHETIC · Example laboratory department record source; manually entered, no live integration.", last_checked_at=now),
+        Source(name="Transport Department", source_type="Manual", description="SYNTHETIC · Example transport department record source; manually entered, no live integration.", last_checked_at=now),
+    ]
+    db.add_all([java, computing, maths, lms, notice, email, pdf, *departments])
     db.flush()
     rows = [
         (java, "Assignment 2", "Assignment", date(2026, 10, 20), lms, "Required scenario A: LMS states 20 October. Neither source is assumed correct."),
@@ -49,7 +56,7 @@ def seed_database(db):
     state.synthetic_data = True
     state.data_revision += 1
     db.commit()
-    return {"seeded": True, "message": "Loaded 12 synthetic obligations, 4 sources and 3 courses. Run reconciliation in the app."}
+    return {"seeded": True, "message": "Loaded 12 synthetic obligations, 9 manually registered sources (including 5 example departments) and 3 courses. Run reconciliation in the app."}
 
 
 def main():
