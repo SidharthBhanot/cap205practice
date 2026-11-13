@@ -1,7 +1,7 @@
 import { api, params } from './api.js';
 import { $, mount, icon, badge, label, date, time, escapeHTML as e, options, classifications, issueTypes, errorState, empty, staleNotice, run, pagination } from './common.js';
 
-mount('results','Reconciliation results','Inspect the evidence behind each relationship. Similarity is a rule score, not a probability.',
+mount('results','Reconciliation results','Inspect how obligation records from different university sources are compared. Similarity is a rule score, not a probability.',
   `<button class="btn" id="run">${icon('reconcile')}Run reconciliation</button>`);
 let offset=0, sequence=0;
 const limit=10;

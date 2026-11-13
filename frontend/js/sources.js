@@ -2,10 +2,10 @@ import { api, params } from './api.js';
 import { API_BASE } from './config.js';
 import { $, mount, icon, badge, date, time, escapeHTML as e, options, sourceTypes, errorState, empty, modal, toast, confirmDelete, debounce, referenceLink } from './common.js';
 
-mount('sources','Information sources','Register where each record came from. All information is entered manually.',
+mount('sources','Information sources','Register the department or source responsible for an obligation record. All information is entered manually.',
   `<button class="btn secondary" id="refresh-sources">Refresh</button><button class="btn" id="add-source">${icon('plus')}Add source</button>`);
 let sequence=0;
-$('#content').innerHTML = `<div class="notice"><div><strong>Manually registered sources.</strong> Add the LMS, notice, email or document where you found each obligation.</div></div><form class="toolbar" id="filters"><label class="search-field">Find a source<input type="search" name="q" id="search" placeholder="Search by source name"></label><label>Source type<select name="source_type">${options(sourceTypes)}</select></label></form><div class="filter-foot"><span id="source-count" role="status"></span><button type="button" class="text-button" id="clear-source-filters">Clear filters</button></div><div class="source-grid" id="source-grid" aria-busy="true"><div class="loading" role="status">Loading sources…</div></div>`;
+$('#content').innerHTML = `<div class="notice"><div><strong>Manually registered departments and sources.</strong> Add a university department or an information source where an obligation was recorded.</div></div><form class="toolbar" id="filters"><label class="search-field">Find a source<input type="search" name="q" id="search" placeholder="Search by source name"></label><label>Source type<select name="source_type">${options(sourceTypes)}</select></label></form><div class="filter-foot"><span id="source-count" role="status"></span><button type="button" class="text-button" id="clear-source-filters">Clear filters</button></div><div class="source-grid" id="source-grid" aria-busy="true"><div class="loading" role="status">Loading sources…</div></div>`;
 $('#filters').onsubmit = event => event.preventDefault();
 $('#filters').onchange = () => load();
 $('#search').oninput = debounce(() => load());

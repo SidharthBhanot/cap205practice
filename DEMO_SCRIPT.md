@@ -1,96 +1,73 @@
-# CAP205 demonstration · 5–6 minutes
+# CAP205 demonstration · Student Academic Obligation Reconciliation System
 
 ## Before the presentation
 
-Follow the README installation, initialization and seed commands. Start the backend, open `http://127.0.0.1:8000`, and keep a terminal available for `python -m pytest -q`. Use a fresh synthetic database so the seeded counts match this script. No external university account is needed.
+Start the local FastAPI application by following the README commands. Open `http://127.0.0.1:8000`. The sample database contains synthetic records only. The prototype does not connect to live university ERP/LMS systems, does not parse documents or email, and does not make official clearance decisions.
 
 ## 0:00–0:40 · Explain the problem
 
-“Our project is the Student Academic Obligation Reconciliation System. Academic information is often spread across LMS entries, faculty notices, email and PDFs. A planner stores deadlines. Our system compares the source records, explains possible duplicates and conflicts, and tells us what needs verification.”
+“Our project is the Student Academic Obligation Reconciliation System. Students may need to confirm that obligations recorded by university departments have been cleared before requesting academic services. The proposed portal brings obligation records together, shows what is pending and explains what needs attention.”
 
-Show the Overview. Point out the synthetic-data label and manual-entry limitation.
+Show the Academic Overview. Explain that the counts are read from the local database and that sample records are synthetic.
 
-“These are synthetic records. We have not connected to a real LMS or inbox. Every total here comes from the SQLite database through the API.”
+## 0:40–1:30 · Show the student obligations
 
-## 0:40–1:20 · Establish the conflicting evidence
+Open **Departmental obligations**. Explain that each record is linked to a student/course context, an issuing department or source, an obligation type, a status and an optional deadline.
 
-Open **Obligations**. Search for `Assignment 2` and filter Course to **Java Programming**. Open each record.
+“The important point is that the original record is preserved. We do not silently overwrite one department’s information with another source’s version.”
 
-“The LMS states 20 October 2026. The Faculty Notice states 22 October. The title, course and type agree, but the dates differ. We retain both original records so the evidence is traceable.”
+## 1:30–2:20 · Show source and department records
 
-## 1:20–2:10 · Run and explain reconciliation
+Open **Departments and information sources**. Show the five synthetic example departments (Library, Accounts, Hostel, Laboratories and Transport), along with the other manually registered information sources. Explain how an obligation can be traced to an issuing department/source, its description, reference URL and manual last-checked time.
 
-Open **Reconciliation**, then click **Run reconciliation**. Filter Classification to **Conflict**.
+“The department entries are synthetic examples for the demonstration. They do not represent real university records or live department connections. The prototype uses information entered by the user.”
 
-“This is rule-based, not AI. The engine checks course identity, normalizes titles for comparison, calculates an explainable similarity score, and examines type and date evidence. It detected a likely same obligation with a deadline conflict.”
+## 2:20–3:20 · Run rule-based reconciliation
 
-Read the reason and point out **Needs Verification**.
+Open **Reconciliation results** and click **Run reconciliation**.
 
-“It does not declare 20 October or 22 October correct. That requires checking the source with a person.”
+“The system compares records using course identity, normalized titles, obligation type and recorded deadlines. It classifies the relationship as Match, Potential Match, Conflict or Unrelated. The title similarity score is deterministic evidence, not an AI prediction or probability.”
 
-Clear the classification filter. Expand **How these comparisons are made**.
+Show a deadline conflict using the synthetic Java Programming Assignment 2 example: LMS says 20 October 2026, while Faculty Notice says 22 October 2026.
 
-“The title score is 60% token overlap and 40% character similarity. A high title score is not sufficient by itself. Candidate rules examine 6 pairs instead of all 66 possible pairs in this sample.”
+“The system does not decide which date is correct. It preserves both records and flags the discrepancy for human verification.”
 
-## 2:10–3:10 · Demonstrate the four outcomes
+## 3:20–4:20 · Show verification and status history
 
-| Filter | What to show and say |
-|---|---|
-| Match | Prototype project submission: course, specific title, type and known date agree across sources. Punctuation/capitalization changes do not replace the stored original. |
-| Potential match | Collections quiz: one source has no date. Missing information creates uncertainty, not an invented date or a deadline conflict. |
-| Potential match | Project proposal versus Project proposal draft: similar wording could still describe distinct milestones. |
-| Unrelated | Assignment 2 in Java and Assignment 2 in Discrete Mathematics: identical titles do not override different course identities. |
+Open **Verification and status history**. Open the example issue and show both pieces of evidence and the explanation.
 
-## 3:10–4:10 · Demonstrate human review and deduplication
+Set the status to **Under Review** and save a note such as:
 
-Open the Java deadline conflict using its issue link. Show both source records, the explanation, and their dates. Set status to **Under Review** and add:
+“Both synthetic records inspected during the classroom demonstration. Awaiting confirmation from the responsible department.”
 
-“Presentation demonstration: both synthetic sources inspected; awaiting faculty verification.”
+Explain the available statuses: Needs Verification, Under Review, Resolved and Dismissed. A review status changes the issue only; it does not alter the original obligation or create an official university clearance.
 
-Save the review. Note the issue ID and total issue count. Run reconciliation again and reopen it.
+## 4:20–5:10 · Explain architecture and database
 
-“The same issue ID, status and notes remain. This second run created zero new issues. Stable fingerprints prevent repeated conflict rows.”
+“The browser interface sends requests to the backend API. The backend validates inputs, applies deterministic reconciliation rules and stores the records and review history in a relational database. The proposed architecture in our report separates the student-facing interface, application logic and data storage. The current version uses SQLite rather than the MySQL database listed as proposed in the report.”
 
-Explain the available Resolved and Dismissed statuses without claiming that either sample deadline has actually been verified. If asked to demonstrate resolution, explicitly label the notes as a **simulated classroom decision**, then resolve it manually. Explain that this changes the issue's status only; it does not alter either deadline.
+For technical accuracy, the current repository is implemented with HTML, CSS and JavaScript, Python FastAPI, SQLAlchemy and SQLite. The submitted report lists Node.js/Express and MySQL as its proposed stack. Do not claim those technologies are already implemented in this repository.
 
-## 4:10–4:50 · Show other validation and traceability
+## 5:10–5:50 · Explain limitations and next steps
 
-Open **Verification queue** and filter to **Missing deadline**, then **Incomplete information**, then **Possibly outdated**.
-
-“We detect missing dates and incomplete identity information separately. An old active record is only flagged as possibly outdated; age does not prove it is wrong.”
-
-Open **Information sources** to show source descriptions and last-checked dates. Explain that a manual source check is different from an automated portal connection.
-
-## 4:50–5:40 · Show implementation and tests
-
-Open `/docs` to show the REST API if internet access is available for Swagger's assets. Alternatively, show the local `/openapi.json` and code.
-
-Run:
-
-```bash
-python -m pytest -q
-```
-
-“Tests cover the four relationship classes, missing evidence, database references, API errors, repeated and concurrent runs, review preservation and changed evidence. The comparison and validation rules are separate from the API routes.”
-
-Finish with the limits:
-
-“This prototype runs locally with manual input. It does not automatically decide which source is trustworthy. Future work could add authorized imports, an audit history and better candidate retrieval, while keeping verification explainable.”
-
-## Optional live CRUD demonstration
-
-Create a temporary Manual source, then add an obligation using an existing course. Leave its deadline blank, run reconciliation, and show the resulting missing-deadline issue. Edit the record with a simulated verified date, run again, and show that the old issue becomes historical without being automatically resolved. Delete only your temporary record and source if desired; the interface asks before deletion.
+“The current prototype uses manual input and a local database. It has no verified live ERP integration, no automatic payment processing and no authority to approve or deny university services. The next step is to complete and test the departmental workflow, validate rules with authorized stakeholders and only then consider approved university-system integration.”
 
 ## Likely viva questions
 
-**Why is this more than a to-do list?** It compares independently recorded facts, classifies relationships, preserves provenance and exposes disagreements with reasons and a review workflow.
+**What problem does the system solve?** It consolidates manually recorded departmental obligations and explains how unresolved records may affect academic services.
 
-**Why not match by title alone?** Different courses can use identical assignment titles; different numbered assignments can look almost identical. Course identity and distinguishing evidence prevent these false matches.
+**Who uses the system?** The report proposes student users, authorized departmental officers and a portal administrator. The current local prototype is a single-user demonstration and does not yet implement authenticated roles.
 
-**Why not automatically prefer the faculty notice?** Source type does not prove freshness or correctness. The prototype has no evidence-based authority policy, so a person verifies both records.
+**What is an obligation?** A recorded pending or cleared item associated with a student and an issuing department, such as a library or accounts obligation.
 
-**What happens on another run?** The latest results are replaced atomically, current issues are upserted by type plus sorted record IDs, and explicit status/notes are preserved.
+**How does reconciliation work?** The rule engine compares records using course identity, title similarity, obligation type and deadlines. It returns an explained classification and related verification issues.
 
-**What happens when reviewed evidence changes?** The previous decision remains visible, but the issue is flagged for verification again. The system never quietly treats the old review as approval of new evidence.
+**Does the system automatically clear a student?** No. It is a demonstrable prototype and does not replace an official registrar or university ERP decision.
 
-**What does “unrelated pairs skipped” mean?** Pairs outside the candidate rules are not compared. This improves efficiency but can miss semantic matches with no shared informative token. Skipping is not proof of unrelatedness.
+**Does it connect to the university ERP?** No verified live ERP integration exists. Records are entered manually.
+
+**What happens when sources disagree?** Both records are preserved, the difference is explained and the issue is left for human verification.
+
+**What is the current technology stack?** The GitHub implementation uses HTML/CSS/vanilla JavaScript, Python FastAPI, SQLAlchemy and SQLite. The report lists Node.js/Express and MySQL as the proposed stack, so describe that difference transparently.
+
+**What remains to be done?** Complete the prototype, validate it with real authorized departmental workflows, test the service-specific rules and assess usability before any live integration.

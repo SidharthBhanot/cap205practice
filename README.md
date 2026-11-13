@@ -6,6 +6,15 @@ A complete **CAP205 Next Gen Computing** software prototype for reconciling acad
 
 ## Start here
 
+## Project scope in the CAP205 report
+
+The report describes a portal for student and departmental users to view and maintain obligation records from university departments such as Library, Accounts, Hostel, Laboratories and Transport. It proposes rule-based service checks for semester registration, examination-form submission, transcripts and degree-related services. The system is intended to explain which recorded obligation needs attention; it is not an official ERP or registrar decision system.
+
+The current prototype provides obligation records, manually registered departments/information sources, rule-based comparison of records, explained reconciliation results, and a human verification/status-history workflow. It uses synthetic records for demonstration and does not connect to live university systems.
+
+> **Implementation note:** The submitted report lists HTML/CSS/JavaScript, Node.js/Express and MySQL as the proposed stack. The current GitHub implementation actually runs HTML/CSS/vanilla JavaScript with Python FastAPI, SQLAlchemy and SQLite. Do not describe Node.js/Express or MySQL as implemented until the code has genuinely been migrated and tested. The current implementation and its tests are documented below.
+
+
 You need **Python 3.11 or newer** and a modern browser. Python 3.12 was used for verification. Install dependencies once with an internet connection; the application itself then runs locally without external services. No Node.js or frontend build step is required.
 
 If using the downloadable archive, extract it and open a terminal **inside `student-academic-reconciliation`**, the folder containing this README.
@@ -50,7 +59,7 @@ API documentation: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). The
 
 Skip `python -m backend.seed_data`. Schema initialization also happens automatically at server startup. Add a course from **Obligations → Add course**, register an information source, and then add records.
 
-The separate seed command adds **12 explicitly synthetic records**, 4 sources and 3 courses. It never runs automatically. Running it again is a no-op. It refuses to mix samples into a nonempty, unseeded database. No real student information is included.
+The separate seed command adds **12 explicitly synthetic records**, 9 manually registered sources (including five example departmental records) and 3 courses. It never runs automatically. Running it again is a no-op. It refuses to mix samples into a nonempty, unseeded database. No real student information is included.
 
 ### Serve the frontend separately (optional)
 
@@ -71,7 +80,7 @@ If you change the API port for the separate-frontend arrangement, add `<meta nam
 | Overview | Live record/source/course totals, open duplicate pairs, open material conflicts, incomplete records, recent records, issue queue and comparison breakdown |
 | Obligations | Create, view, edit and delete; preserve original title; course/type/status/source selection; optional deadline and source URL |
 | Record search | Search title, description, course code/name and source; filter course, type, status and deadline range; missing-deadline filter; sorting and pagination |
-| Information sources | Register, view, edit and delete unused sources; source types, descriptions, URLs and manual last-checked timestamp |
+| Departments and information sources | Register, view, edit and delete unused department/source entries; source types, descriptions, URLs and manual last-checked timestamp |
 | Reconciliation | Trigger an atomic rule-based run; view compared records and explanations; filter by classification, course and issue type |
 | Verification queue | Review source evidence side by side, view current records, set one of four statuses and save resolution notes |
 
